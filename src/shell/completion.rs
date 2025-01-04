@@ -7,16 +7,21 @@ use rustyline::Helper;
 use std::collections::HashMap;
 use std::fs;
 
+/// Provides command and filename completion for the shell
 pub struct FluxCompleter {
     filename_completer: FilenameCompleter,
     commands: Vec<String>,
 }
 
 impl FluxCompleter {
+    /// Creates a new completer with the given command aliases
+    /// 
+    /// # Arguments
+    /// * `aliases` - Map of command aliases to include in completion
     pub fn new(aliases: HashMap<String, String>) -> Self {
         // Get all directories in PATH for command completion
-        let path_dirs = std::env::var("PATH").unwrap_or_default();
-        let mut commands = Vec::new();
+        let path_dirs: String = std::env::var("PATH").unwrap_or_default();
+        let mut commands: Vec<String> = Vec::new();
 
         // Collect executables from PATH
         for dir in path_dirs.split(':') {
@@ -63,6 +68,15 @@ impl FluxCompleter {
 impl Completer for FluxCompleter {
     type Candidate = Pair;
 
+    /// Provides completion suggestions for the current input
+    /// 
+    /// # Arguments
+    /// * `line` - Current input line
+    /// * `pos` - Cursor position in the line
+    /// * `ctx` - Readline context
+    /// 
+    /// # Returns
+    /// * Tuple of (start position, completion candidates)
     fn complete(
         &self,
         line: &str,

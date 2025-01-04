@@ -6,6 +6,14 @@ mod utils;
 use dialoguer::Confirm;
 use shell::Shell;
 
+/// Main entry point for the Flux shell
+/// 
+/// Handles command-line arguments and initializes the shell:
+/// - -h, --help: Display help information
+/// - -v, --version: Display version information
+/// - config: Reconfigure the shell
+/// 
+/// Without arguments, launches the interactive shell.
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() > 1 {
@@ -31,7 +39,6 @@ fn main() {
             }
             "config" => {
                 let config_path: PathBuf = Shell::get_config_path();
-                // Remove existing config to trigger reconfiguration
                 if let Err(e) = std::fs::remove_file(&config_path) {
                     if !matches!(e.kind(), std::io::ErrorKind::NotFound) {
                         eprintln!("Failed to remove config: {}", e);

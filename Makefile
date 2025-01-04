@@ -15,7 +15,7 @@ install:
 
 	# Install man page
 	install -d $(DESTDIR)$(MANDIR)/man1
-	install -m 644 docs/flux.1 $(DESTDIR)$(MANDIR)/man1/
+	install -m 644 resources/flux.1 $(DESTDIR)$(MANDIR)/man1/
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/flux

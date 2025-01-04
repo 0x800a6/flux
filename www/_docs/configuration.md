@@ -3,6 +3,7 @@ layout: docs
 title: Configuration
 description: Learn how to configure Flux Shell
 order: 2
+show_edit_button: true
 ---
 
 # Configuration Guide

@@ -11,7 +11,7 @@ highlighter: rouge
 collections:
   docs:
     output: true
-    permalink: /docs/:path/
+    permalink: /:collection/:path:output_ext
   posts:
     output: true
     permalink: /blog/:year/:month/:day/:title/

@@ -3,12 +3,57 @@ use crate::utils::env::expand_env_vars;
 use colored::*;
 use std::process::{Command, Stdio};
 use std::time::Instant;
+use crate::utils::env::{store_internal_env, remove_internal_env, list_internal_envs};
+use which;
 
+/// Executes a shell command with the given configuration
+/// 
+/// # Arguments
+/// * `cmd` - Command string to execute
+/// * `config` - Shell configuration settings
+/// 
+/// # Returns
+/// * `bool` - Whether the shell should continue running
 pub(crate) fn execute_command(cmd: &str, config: &FluxConfig) -> bool {
     let start_time: Instant = Instant::now();
 
-    // First check if it's a path alias
-    if let Some(path) = config.path_aliases.get(cmd) {
+    let cmd: String = expand_env_vars(cmd);
+
+    let args: Vec<&str> = cmd.split_whitespace().collect();
+    if args.is_empty() {
+        return true;
+    }
+
+    if is_interactive_command(args[0]) {
+        let mut command: Command = Command::new(args[0]);
+        command.args(&args[1..]);
+        
+        command
+            .stdin(Stdio::inherit())
+            .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit());
+
+        match command.spawn() {
+            Ok(mut child) => {
+                let status: Result<std::process::ExitStatus, std::io::Error> = child.wait();
+                match status {
+                    Ok(exit_status) if !exit_status.success() => {
+                        print_error(&format!("Command exited with code: {}", exit_status), config);
+                    }
+                    Err(e) => {
+                        print_error(&format!("Failed to run command: {}", e), config);
+                    }
+                    _ => {}
+                }
+            }
+            Err(e) => {
+                print_error(&format!("Failed to launch command: {}", e), config);
+            }
+        }
+        return true;
+    }
+
+    if let Some(path) = config.path_aliases.get(&cmd) {
         if let Err(e) = std::env::set_current_dir(path) {
             print_error(&format!("Failed to change directory: {}", e), config);
         }
@@ -22,20 +67,11 @@ pub(crate) fn execute_command(cmd: &str, config: &FluxConfig) -> bool {
         return true;
     }
 
-    // Expand environment variables in the command
-    let cmd: String = expand_env_vars(cmd);
-
-    // Then check command aliases
-    let cmd: String = if let Some(alias) = config.aliases.get(&cmd) {
+    if let Some(alias) = config.aliases.get(&cmd) {
         alias.clone()
     } else {
-        cmd
+        cmd.clone()
     };
-
-    let args: Vec<&str> = cmd.split_whitespace().collect();
-    if args.is_empty() {
-        return true;
-    }
 
     if handle_builtin_command(&args, config) {
         if config.show_execution_time {
@@ -73,9 +109,21 @@ pub(crate) fn execute_command(cmd: &str, config: &FluxConfig) -> bool {
         }
         _ => {}
     }
+
+    // Return true to keep the shell running
     true
 }
 
+/// Handles built-in shell commands
+/// 
+/// Processes internal commands like cd, exit, env, etc.
+/// 
+/// # Arguments
+/// * `args` - Command arguments split into words
+/// * `config` - Shell configuration settings
+/// 
+/// # Returns
+/// * `bool` - Whether the command was handled as a builtin
 pub(crate) fn handle_builtin_command(args: &[&str], config: &FluxConfig) -> bool {
     match args[0] {
         "exit" => {
@@ -108,19 +156,90 @@ pub(crate) fn handle_builtin_command(args: &[&str], config: &FluxConfig) -> bool
             true
         }
         "env" => {
-            match args.get(1) {
-                Some(&"set") if args.len() == 4 => {
-                    std::env::set_var(args[2], args[3]);
-                    println!("Set {}={}", args[2], args[3]);
+            if args.len() == 1 {
+                for (key, value) in std::env::vars() {
+                    println!("{}={}", key, value);
                 }
-                Some(&"unset") if args.len() == 3 => {
-                    std::env::remove_var(args[2]);
-                    println!("Unset {}", args[2]);
+                return true;
+            }
+
+            match args[1] {
+                "-s" | "-S" | "--set" => {
+                    if args.len() < 3 {
+                        print_error("Usage: env -s KEY=VALUE [system|internal]", config);
+                        return true;
+                    }
+                    let kv_pair: &str = args[2];
+                    let storage: String = args.get(3).map(|s| s.to_lowercase()).unwrap_or("system".to_string());
+                    
+                    if let Some((key, value)) = kv_pair.split_once('=') {
+                        match storage.as_str() {
+                            "system" => std::env::set_var(key, value),
+                            "internal" => {
+                                if let Err(e) = store_internal_env(key, value) {
+                                    print_error(&format!("Failed to store internal env: {}", e), config);
+                                    return true;
+                                }
+                            }
+                            _ => {
+                                print_error("Invalid storage type. Use 'system' or 'internal'", config);
+                                return true;
+                            }
+                        }
+                        print_success(&format!("Set {}={}", key, value), config);
+                    } else {
+                        print_error("Invalid format. Use KEY=VALUE", config);
+                    }
+                }
+                "-r" | "-R" | "--remove" => {
+                    if args.len() < 3 {
+                        print_error("Usage: env -r KEY [system|internal]", config);
+                        return true;
+                    }
+                    let key: &str = args[2];
+                    let storage: String = args.get(3).map(|s| s.to_lowercase()).unwrap_or("system".to_string());
+                    
+                    match storage.as_str() {
+                        "system" => std::env::remove_var(key),
+                        "internal" => {
+                            if let Err(e) = remove_internal_env(key) {
+                                print_error(&format!("Failed to remove internal env: {}", e), config);
+                                return true;
+                            }
+                        }
+                        _ => {
+                            print_error("Invalid storage type. Use 'system' or 'internal'", config);
+                            return true;
+                        }
+                    }
+                    print_success(&format!("Removed {}", key), config);
+                }
+                "-l" | "-L" | "--list" => {
+                    let storage: String = args.get(2).map(|s| s.to_lowercase()).unwrap_or("system".to_string());
+                    
+                    match storage.as_str() {
+                        "system" => {
+                            for (key, value) in std::env::vars() {
+                                println!("{}={}", key, value);
+                            }
+                        }
+                        "internal" => {
+                            match list_internal_envs() {
+                                Ok(vars) => {
+                                    for (key, value) in vars {
+                                        println!("{}={}", key, value);
+                                    }
+                                }
+                                Err(e) => print_error(&format!("Failed to list internal envs: {}", e), config),
+                            }
+                        }
+                        _ => {
+                            print_error("Invalid storage type. Use 'system' or 'internal'", config);
+                        }
+                    }
                 }
                 _ => {
-                    for (key, value) in std::env::vars() {
-                        println!("{}={}", key, value);
-                    }
+                    print_error("Invalid option. Use -s (set), -r (remove), or -l (list)", config);
                 }
             }
             true
@@ -143,18 +262,36 @@ pub(crate) fn handle_builtin_command(args: &[&str], config: &FluxConfig) -> bool
     }
 }
 
+/// Prints an error message with appropriate formatting
+/// 
+/// # Arguments
+/// * `message` - Error message to display
+/// * `config` - Shell configuration for styling
 fn print_error(message: &str, config: &FluxConfig) {
     let prefix: ColoredString = "Error:".color(config.theme.error_color.as_str());
     let message: ColoredString = message.color(config.theme.error_color.as_str());
     println!("{} {}", prefix, message);
 }
 
+/// Prints a success message with appropriate formatting
+/// 
+/// # Arguments
+/// * `message` - Success message to display
+/// * `config` - Shell configuration for styling
 fn print_success(message: &str, config: &FluxConfig) {
     let prefix: ColoredString = "Success:".color(config.theme.success_color.as_str());
     let message: ColoredString = message.color(config.theme.success_color.as_str());
     println!("{} {}", prefix, message);
 }
 
+/// Resolves a path using configured path aliases
+/// 
+/// # Arguments
+/// * `path` - Path string to resolve
+/// * `config` - Shell configuration containing aliases
+/// 
+/// # Returns
+/// * Resolved path with aliases expanded
 fn resolve_path(path: &str, config: &FluxConfig) -> String {
     let mut resolved: String = path.to_string();
     for (alias, real_path) in &config.path_aliases {
@@ -164,4 +301,64 @@ fn resolve_path(path: &str, config: &FluxConfig) -> String {
         }
     }
     resolved
+}
+
+/// Determines if a command requires interactive terminal access
+/// 
+/// Checks if the command is known to be interactive (like vim, nano)
+/// or if it uses terminal-related libraries.
+/// 
+/// # Arguments
+/// * `cmd` - Command name to check
+/// 
+/// # Returns
+/// * `bool` - Whether the command is interactive
+fn is_interactive_command(cmd: &str) -> bool {
+    let known_interactive: [&str; 39] = [
+        "nano", "vim", "vi", "emacs", "less", "more", "top", "htop",
+        "python", "python3", "ipython", "node", "mysql", "psql",
+        "sqlite3", "mongo", "redis-cli", "ssh", "telnet", "ftp",
+        "sftp", "tmux", "screen", "man", "info", "lynx", "w3m",
+        "irssi", "weechat", "mutt", "alpine", "code", "nvim",
+        "pico", "joe", "mc", "ranger", "nnn", "vifm"
+    ];
+
+    if known_interactive.contains(&cmd) {
+        return true;
+    }
+
+    if let Ok(output) = Command::new("ldd")
+        .arg(which::which(cmd).unwrap_or_default())
+        .output()
+    {
+        if let Ok(libs) = String::from_utf8(output.stdout) {
+            let interactive_libs = [
+                "libncurses", "libtinfo", "libreadline",
+                "libslang", "libtermcap", "libvterm"
+            ];
+            
+            if interactive_libs.iter().any(|lib| libs.contains(lib)) {
+                return true;
+            }
+        }
+    }
+
+    // Check if the command has a terminal as a dependency in its package metadata
+    if let Ok(output) = Command::new("dpkg")
+        .args(["-s", cmd])
+        .output()
+    {
+        if let Ok(info) = String::from_utf8(output.stdout) {
+            let terminal_deps = [
+                "ncurses", "readline", "terminal", "tty",
+                "console", "screen", "vte"
+            ];
+            
+            if terminal_deps.iter().any(|dep| info.contains(dep)) {
+                return true;
+            }
+        }
+    }
+
+    false
 }

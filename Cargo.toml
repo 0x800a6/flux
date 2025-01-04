@@ -1,6 +1,6 @@
 [package]
 name = "flux"
-version = "0.1.0"
+version = "0.1.2"
 edition = "2021"
 
 [dependencies]
@@ -13,3 +13,5 @@ chrono = "0.4"
 hostname = "0.3"
 regex = "1.5"
 dialoguer = "0.10"
+base64 = "0.21"
+which = "4.4"

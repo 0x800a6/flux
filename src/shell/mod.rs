@@ -10,12 +10,19 @@ use rustyline::history::FileHistory;
 use rustyline::{error::ReadlineError, Editor};
 use std::path::PathBuf;
 
+/// Main shell implementation
 pub struct Shell {
+    /// Shell configuration settings
     config: FluxConfig,
+    /// Line editor with history and completion
     editor: Editor<FluxCompleter, FileHistory>,
 }
 
 impl Shell {
+    /// Creates a new shell instance with default configuration
+    /// 
+    /// Initializes the line editor, loads history, and sets up
+    /// command completion and environment variables.
     pub fn new() -> Self {
         let config_path: PathBuf = Self::get_config_path();
         let config: FluxConfig = FluxConfig::load(&config_path);
@@ -25,8 +32,8 @@ impl Shell {
         history_path.push("history.txt");
 
         // Initialize editor with custom completer
-        let completer = FluxCompleter::new(config.aliases.clone());
-        let mut editor = Editor::new().expect("Failed to create editor");
+        let completer: FluxCompleter = FluxCompleter::new(config.aliases.clone());
+        let mut editor: Editor<FluxCompleter, FileHistory> = Editor::new().expect("Failed to create editor");
 
         // Configure editor
         editor.set_helper(Some(completer));
@@ -51,6 +58,12 @@ impl Shell {
         Shell { config, editor }
     }
 
+    /// Gets the path to the shell configuration file
+    /// 
+    /// Creates necessary directories if they don't exist.
+    /// 
+    /// # Returns
+    /// * Path to the configuration file
     pub fn get_config_path() -> PathBuf {
         let mut path: PathBuf = if let Some(app_data) = dirs::config_dir() {
             app_data
@@ -63,6 +76,10 @@ impl Shell {
         path
     }
 
+    /// Runs the main shell loop
+    /// 
+    /// Continuously reads commands, processes them, and maintains
+    /// command history until exit is requested.
     pub fn run(&mut self) {
         let config_path: PathBuf = Self::get_config_path();
         let history_path: PathBuf = config_path.parent().unwrap().join("history.txt");

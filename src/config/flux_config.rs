@@ -5,24 +5,49 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
+/// Configuration structure for the Flux shell
+/// 
+/// This struct contains all customizable settings for the shell's behavior,
+/// including visual elements, aliases, and environment variables.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FluxConfig {
+    /// The basic prompt string shown to users
     pub prompt: String,
+    /// Visual theme settings for the shell
     pub theme: Theme,
+    /// Command aliases mapping short names to full commands
     pub aliases: HashMap<String, String>,
+    /// Maximum number of commands to keep in history
     pub history_size: usize,
+    /// Whether to show command execution time
     pub show_execution_time: bool,
+    /// Directory aliases mapping shortcuts to full paths
     pub path_aliases: HashMap<String, String>,
+    /// Environment variables to set on shell startup
     pub environment_variables: HashMap<String, String>,
+    /// Template for formatting the prompt with placeholders
+    /// 
+    /// Available placeholders:
+    /// - {time}: Current time
+    /// - {user}: Username
+    /// - {host}: Hostname
+    /// - {dir}: Current directory
+    /// - {git}: Git branch (if in repo)
     pub prompt_template: String,
+    /// Whether to show git branch in prompt
     pub show_git_branch: bool,
+    /// Whether to show time in prompt
     pub show_time: bool,
+    /// Whether to show username in prompt
     pub show_username: bool,
+    /// Whether to show hostname in prompt
     pub show_hostname: bool,
+    /// Format string for displaying time
     pub time_format: String,
 }
 
 impl FluxConfig {
+    /// Creates a minimal configuration with basic features
     pub fn minimal() -> Self {
         FluxConfig {
             prompt: "λ ".to_string(),
@@ -41,6 +66,7 @@ impl FluxConfig {
         }
     }
 
+    /// Creates default path aliases used across all configurations
     fn default_path_aliases() -> HashMap<String, String> {
         let mut aliases: HashMap<String, String> = HashMap::new();
         aliases.insert(
@@ -67,6 +93,7 @@ impl FluxConfig {
         aliases
     }
 
+    /// Creates a full-featured configuration with all options enabled
     pub fn full() -> Self {
         let mut aliases: HashMap<String, String> = HashMap::new();
         aliases.insert("ll".to_string(), "ls -l".to_string());
@@ -119,6 +146,7 @@ impl FluxConfig {
         }
     }
 
+    /// Creates a powerline-styled configuration with fancy prompts
     pub fn powerline() -> Self {
         let mut config: FluxConfig = Self::full();
         config.prompt_template = "╭─[{time}] {user}@{host} in {dir} on {git}\n╰─λ ".to_string();
@@ -126,6 +154,13 @@ impl FluxConfig {
         config
     }
 
+    /// Loads or creates configuration from the specified path
+    /// 
+    /// If the configuration file exists, it will be loaded.
+    /// Otherwise, an interactive setup will guide the user through creating one.
+    /// 
+    /// # Arguments
+    /// * `config_path` - Path to the configuration file
     pub fn load(config_path: &PathBuf) -> Self {
         if let Ok(contents) = fs::read_to_string(config_path) {
             if let Ok(config) = serde_json::from_str(&contents) {

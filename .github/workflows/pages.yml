@@ -19,7 +19,17 @@ jobs:
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        
+
+      - name: Add NodeJS and NPM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nodejs npm
+
+      - name: Build docs
+        run: |
+          cd scripts
+          node docs.js
+
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:

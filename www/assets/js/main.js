@@ -22,6 +22,9 @@ function generateTableOfContents() {
     
     if (!article || !toc) return;
 
+    // Clear existing content first
+    toc.innerHTML = '<h6>On this page</h6>';
+
     const headings = article.querySelectorAll('h2, h3');
     const tocList = document.createElement('ul');
     tocList.className = 'toc-list';

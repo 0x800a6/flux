@@ -4,8 +4,22 @@ use colored::*;
 use std::env;
 use std::process::Command;
 
+/// Formats the shell prompt according to the configuration
+/// 
+/// Replaces placeholders in the prompt template with actual values:
+/// - {user}: Current username
+/// - {host}: System hostname
+/// - {dir}: Current directory
+/// - {git}: Git branch (if applicable)
+/// - {time}: Current time
+/// 
+/// # Arguments
+/// * `config` - Shell configuration containing prompt settings
+/// 
+/// # Returns
+/// * Formatted prompt string with colors and replacements
 pub(crate) fn format_prompt(config: &FluxConfig) -> String {
-    let mut prompt = config.prompt_template.clone();
+    let mut prompt: String = config.prompt_template.clone();
 
     // Username with separator
     if config.show_username {
@@ -57,7 +71,7 @@ pub(crate) fn format_prompt(config: &FluxConfig) -> String {
             .map(|b| b.trim().to_string())
             .unwrap_or_default();
         if !git_branch.is_empty() {
-            let formatted_branch = git_branch
+            let formatted_branch: String = git_branch
                 .color(config.theme.git_branch_color.as_str())
                 .to_string();
             prompt = prompt.replace(" on {git}", &format!(" on {}", formatted_branch));
@@ -69,7 +83,7 @@ pub(crate) fn format_prompt(config: &FluxConfig) -> String {
     // Time
     if config.show_time {
         let time: String = Local::now().format(&config.time_format).to_string();
-        let formatted_time = time.color(config.theme.time_color.as_str()).to_string();
+        let formatted_time: String = time.color(config.theme.time_color.as_str()).to_string();
         prompt = prompt.replace("{time}", &formatted_time);
     }
 
@@ -82,7 +96,12 @@ pub(crate) fn format_prompt(config: &FluxConfig) -> String {
     prompt
 }
 
-// Get the current git branch
+/// Gets the current git branch name
+/// 
+/// Executes `git rev-parse --abbrev-ref HEAD` to get the branch name
+/// 
+/// # Returns
+/// * `Option<String>` - Branch name if in a git repository, None otherwise
 pub(crate) fn get_git_branch() -> Option<String> {
     let output: std::process::Output = Command::new("git")
         .args(["rev-parse", "--abbrev-ref", "HEAD"])

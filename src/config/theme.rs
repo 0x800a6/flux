@@ -1,23 +1,38 @@
 use serde::{Deserialize, Serialize};
 
+/// Theme configuration for the shell's visual appearance
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Theme {
+    /// Color for the main prompt text
     pub prompt_color: String,
+    /// Color for error messages
     pub error_color: String,
+    /// Color for success messages
     pub success_color: String,
+    /// Color for displaying username
     pub username_color: String,
+    /// Color for displaying hostname
     pub hostname_color: String,
+    /// Color for displaying current directory
     pub directory_color: String,
+    /// Color for displaying git branch information
     pub git_branch_color: String,
+    /// Color for displaying time
     pub time_color: String,
+    /// Color for displaying command text
     pub command_color: String,
+    /// Color for displaying command arguments
     pub args_color: String,
+    /// Color for displaying file paths
     pub path_color: String,
+    /// Color for accent elements in the prompt
     pub accent_color: String,
+    /// Color for separator elements
     pub separator_color: String,
 }
 
 impl Theme {
+    /// Creates a minimal theme with basic monochrome colors
     pub fn minimal() -> Self {
         Theme {
             prompt_color: "white".to_string(),
@@ -36,6 +51,7 @@ impl Theme {
         }
     }
 
+    /// Creates a full-featured theme with distinct colors
     pub fn full() -> Self {
         Theme {
             prompt_color: "cyan".to_string(),
@@ -54,6 +70,7 @@ impl Theme {
         }
     }
 
+    /// Creates a powerline-inspired theme with bright colors
     pub fn powerline() -> Self {
         Theme {
             prompt_color: "cyan".to_string(),

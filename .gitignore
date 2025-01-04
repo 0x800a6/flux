@@ -53,3 +53,10 @@ coverage/
 
 # Husky
 .husky/_
+
+# Jekyll
+www/_site/
+www/.jekyll-cache
+
+# Docs
+www/_docs/codebase/

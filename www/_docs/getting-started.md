@@ -3,6 +3,7 @@ layout: docs
 title: Getting Started
 description: Learn how to install and set up Flux Shell
 order: 1
+show_edit_button: true
 ---
 
 # Getting Started with Flux Shell
