@@ -47,3 +47,17 @@ github:
   repository_url: https://github.com/chocoOnEstrogen/flux
   zip_url: https://github.com/chocoOnEstrogen/flux/archive/refs/heads/master.zip
   tar_url: https://github.com/chocoOnEstrogen/flux/archive/refs/heads/master.tar.gz 
+
+title: "Flux Shell"
+tagline: "A modern shell for modern developers"
+description: "Flux Shell is a blazing-fast, customizable shell written in Rust, designed for modern developers"
+url: "https://flux.choco.rip"
+author: chocoOnEstrogen
+twitter:
+  username: fluxshell
+  card: summary_large_image
+logo: /assets/images/flux-shell-logo.png
+social:
+  name: Flux Shell
+  links:
+    - https://github.com/chocoOnEstrogen/flux

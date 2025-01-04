@@ -3,7 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ site.title }} - {{ page.title }}</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>{{ site.title }}{% if page.title %} - {{ page.title }}{% endif %}</title>
+    <meta name="title" content="{{ site.title }}{% if page.title %} - {{ page.title }}{% endif %}">
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    {% if page.keywords %}<meta name="keywords" content="{{ page.keywords }}">{% endif %}
+    <meta name="author" content="{{ page.author | default: site.author }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+    <meta property="og:title" content="{{ site.title }}{% if page.title %} - {{ page.title }}{% endif %}">
+    <meta property="og:description" content="{{ page.description | default: site.description }}">
+    {% if page.image %}
+    <meta property="og:image" content="{{ site.url }}{{ page.image }}">
+    {% elsif site.logo %}
+    <meta property="og:image" content="{{ site.url }}{{ site.logo }}">
+    {% endif %}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="{{ site.twitter.card | default: 'summary' }}">
+    <meta name="twitter:site" content="@{{ site.twitter.username }}">
+    <meta name="twitter:title" content="{{ site.title }}{% if page.title %} - {{ page.title }}{% endif %}">
+    <meta name="twitter:description" content="{{ page.description | default: site.description }}">
+    {% if page.image %}
+    <meta name="twitter:image" content="{{ site.url }}{{ page.image }}">
+    {% elsif site.logo %}
+    <meta name="twitter:image" content="{{ site.url }}{{ site.logo }}">
+    {% endif %}
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->

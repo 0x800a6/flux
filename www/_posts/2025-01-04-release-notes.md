@@ -3,6 +3,15 @@ layout: post
 title: "Flux Shell 0.1.0 Released"
 date: 2025-01-04
 author: chocoOnEstrogen
+description: "Announcing Flux Shell 0.1.0, a modern shell with powerful features including interactive setup, rich theming, git integration, and productivity tools."
+keywords: "flux shell, shell, terminal, command line, rust, git integration, shell customization, developer tools"
+image: "/assets/images/flux-shell-banner.png"
+category: "releases"
+tags: 
+  - release
+  - shell
+  - terminal
+  - rust
 ---
 
 We're excited to announce the first stable release of Flux Shell! This release introduces a modern, customizable shell experience with powerful features and a user-friendly configuration system.
