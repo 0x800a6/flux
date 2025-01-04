@@ -3,13 +3,13 @@ mod completion;
 mod prompt;
 
 use crate::config::FluxConfig;
+use crate::plugin::PluginManager;
 use crate::shell::completion::FluxCompleter;
 use crate::utils::env::set_initial_env_vars;
 use rustyline::config::Configurer;
 use rustyline::history::FileHistory;
 use rustyline::{error::ReadlineError, Editor};
 use std::path::PathBuf;
-use crate::plugin::PluginManager;
 
 /// Main shell implementation
 pub struct Shell {
@@ -22,7 +22,7 @@ pub struct Shell {
 
 impl Shell {
     /// Creates a new shell instance with default configuration
-    /// 
+    ///
     /// Initializes the line editor, loads history, and sets up
     /// command completion and environment variables.
     pub fn new() -> Self {
@@ -35,7 +35,8 @@ impl Shell {
 
         // Initialize editor with custom completer
         let completer: FluxCompleter = FluxCompleter::new(config.aliases.clone());
-        let mut editor: Editor<FluxCompleter, FileHistory> = Editor::new().expect("Failed to create editor");
+        let mut editor: Editor<FluxCompleter, FileHistory> =
+            Editor::new().expect("Failed to create editor");
 
         // Configure editor
         editor.set_helper(Some(completer));
@@ -62,17 +63,17 @@ impl Shell {
             eprintln!("Failed to load plugins: {}", e);
         }
 
-        Shell { 
-            config, 
+        Shell {
+            config,
             editor,
             plugin_manager,
         }
     }
 
     /// Gets the path to the shell configuration file
-    /// 
+    ///
     /// Creates necessary directories if they don't exist.
-    /// 
+    ///
     /// # Returns
     /// * Path to the configuration file
     pub fn get_config_path() -> PathBuf {
@@ -88,7 +89,7 @@ impl Shell {
     }
 
     /// Runs the main shell loop
-    /// 
+    ///
     /// Continuously reads commands, processes them, and maintains
     /// command history until exit is requested.
     pub fn run(&mut self) {

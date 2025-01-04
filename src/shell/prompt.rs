@@ -5,17 +5,17 @@ use std::env;
 use std::process::Command;
 
 /// Formats the shell prompt according to the configuration
-/// 
+///
 /// Replaces placeholders in the prompt template with actual values:
 /// - {user}: Current username
 /// - {host}: System hostname
 /// - {dir}: Current directory
 /// - {git}: Git branch (if applicable)
 /// - {time}: Current time
-/// 
+///
 /// # Arguments
 /// * `config` - Shell configuration containing prompt settings
-/// 
+///
 /// # Returns
 /// * Formatted prompt string with colors and replacements
 pub(crate) fn format_prompt(config: &FluxConfig) -> String {
@@ -97,9 +97,9 @@ pub(crate) fn format_prompt(config: &FluxConfig) -> String {
 }
 
 /// Gets the current git branch name
-/// 
+///
 /// Executes `git rev-parse --abbrev-ref HEAD` to get the branch name
-/// 
+///
 /// # Returns
 /// * `Option<String>` - Branch name if in a git repository, None otherwise
 pub(crate) fn get_git_branch() -> Option<String> {

@@ -6,7 +6,7 @@ use std::fs;
 use std::path::PathBuf;
 
 /// Configuration structure for the Flux shell
-/// 
+///
 /// This struct contains all customizable settings for the shell's behavior,
 /// including visual elements, aliases, and environment variables.
 #[derive(Debug, Serialize, Deserialize)]
@@ -26,7 +26,7 @@ pub struct FluxConfig {
     /// Environment variables to set on shell startup
     pub environment_variables: HashMap<String, String>,
     /// Template for formatting the prompt with placeholders
-    /// 
+    ///
     /// Available placeholders:
     /// - {time}: Current time
     /// - {user}: Username
@@ -155,10 +155,10 @@ impl FluxConfig {
     }
 
     /// Loads or creates configuration from the specified path
-    /// 
+    ///
     /// If the configuration file exists, it will be loaded.
     /// Otherwise, an interactive setup will guide the user through creating one.
-    /// 
+    ///
     /// # Arguments
     /// * `config_path` - Path to the configuration file
     pub fn load(config_path: &PathBuf) -> Self {

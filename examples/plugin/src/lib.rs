@@ -37,9 +37,9 @@ impl FluxPlugin for ExamplePlugin {
 
     fn execute(&self, args: &[String]) -> Result<(), String> {
         match args.get(0).map(String::as_str) {
-            Some("add") => self.handle_math(args, |a, b| a + b, "+"),
-            Some("sub") => self.handle_math(args, |a, b| a - b, "-"),
-            Some("mul") => self.handle_math(args, |a, b| a * b, "*"),
+            Some("add") => self.handle_math(args, |a, b| Ok(a + b), "+"),
+            Some("sub") => self.handle_math(args, |a, b| Ok(a - b), "-"),
+            Some("mul") => self.handle_math(args, |a, b| Ok(a * b), "*"),
             Some("div") => self.handle_math(args, |a, b| {
                 if b == 0 {
                     return Err("Division by zero!".to_string());

@@ -15,7 +15,7 @@ pub struct FluxCompleter {
 
 impl FluxCompleter {
     /// Creates a new completer with the given command aliases
-    /// 
+    ///
     /// # Arguments
     /// * `aliases` - Map of command aliases to include in completion
     pub fn new(aliases: HashMap<String, String>) -> Self {
@@ -69,12 +69,12 @@ impl Completer for FluxCompleter {
     type Candidate = Pair;
 
     /// Provides completion suggestions for the current input
-    /// 
+    ///
     /// # Arguments
     /// * `line` - Current input line
     /// * `pos` - Cursor position in the line
     /// * `ctx` - Readline context
-    /// 
+    ///
     /// # Returns
     /// * Tuple of (start position, completion candidates)
     fn complete(
