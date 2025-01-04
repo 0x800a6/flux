@@ -1,10 +1,17 @@
 PREFIX ?= /usr/local
 MANDIR ?= $(PREFIX)/share/man
+TARGET ?= x86_64-unknown-linux-gnu  # Default target
 
-.PHONY: all install uninstall build
+.PHONY: all install uninstall build build-arm64 build-armv7
 
 build:
-	cargo build --release
+	cargo build --release --target $(TARGET)
+
+build-arm64:
+	RUSTFLAGS='-C linker=aarch64-linux-gnu-gcc' cargo build --release --target aarch64-unknown-linux-gnu
+
+build-armv7:
+	cargo build --release --target armv7-unknown-linux-gnueabihf
 
 all: build
 
