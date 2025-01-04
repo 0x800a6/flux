@@ -1,6 +1,6 @@
 PREFIX ?= /usr/local
 MANDIR ?= $(PREFIX)/share/man
-TARGET ?= x86_64-unknown-linux-gnu  # Default target
+TARGET ?= x86_64-unknown-linux-gnu
 
 .PHONY: all install uninstall build build-arm64 build-armv7
 
@@ -18,7 +18,7 @@ all: build
 install:
 	# Install binary
 	install -d $(DESTDIR)$(PREFIX)/bin
-	install -m 755 target/release/flux $(DESTDIR)$(PREFIX)/bin/
+	install -m 755 target/$(TARGET)/release/flux $(DESTDIR)$(PREFIX)/bin/
 
 	# Install man page
 	install -d $(DESTDIR)$(MANDIR)/man1
