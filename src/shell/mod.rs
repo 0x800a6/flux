@@ -1,14 +1,18 @@
 mod commands;
+mod completion;
 mod prompt;
 
 use crate::config::FluxConfig;
+use crate::shell::completion::FluxCompleter;
 use crate::utils::env::set_initial_env_vars;
-use rustyline::{error::ReadlineError, DefaultEditor};
+use rustyline::config::Configurer;
+use rustyline::history::FileHistory;
+use rustyline::{error::ReadlineError, Editor};
 use std::path::PathBuf;
 
 pub struct Shell {
     config: FluxConfig,
-    editor: DefaultEditor,
+    editor: Editor<FluxCompleter, FileHistory>,
 }
 
 impl Shell {
@@ -20,8 +24,18 @@ impl Shell {
         let mut history_path: PathBuf = config_path.parent().unwrap().to_path_buf();
         history_path.push("history.txt");
 
-        let mut editor: rustyline::Editor<(), rustyline::history::FileHistory> =
-            DefaultEditor::new().expect("Failed to create editor");
+        // Initialize editor with custom completer
+        let completer = FluxCompleter::new(config.aliases.clone());
+        let mut editor = Editor::new().expect("Failed to create editor");
+
+        // Configure editor
+        editor.set_helper(Some(completer));
+        let _ = editor.set_max_history_size(config.history_size);
+        editor.set_auto_add_history(true);
+
+        // Enable completion features
+        editor.set_completion_type(rustyline::CompletionType::List);
+        editor.set_edit_mode(rustyline::EditMode::Emacs);
 
         // Load history from file
         if let Err(e) = editor.load_history(&history_path) {

@@ -18,7 +18,9 @@ fn main() {
                 println!("  -h, --help     Display this help message");
                 println!("  -v, --version  Display version information");
                 println!("  config         Reconfigure the shell");
-                println!("\nFor more information, see the documentation: https://flux.choco.rip/docs");
+                println!(
+                    "\nFor more information, see the documentation: https://flux.choco.rip/docs"
+                );
                 println!("----------------------------------------");
                 println!("Please consider sponsoring the project: https://github.com/sponsors/chocoOnEstrogen");
                 return;
