@@ -4,7 +4,7 @@
 flux - An advanced, customizable shell for modern systems
 
 ## SYNOPSIS
-`flux [OPTIONS]`
+`flux [OPTIONS] [COMMAND]`
 
 ## DESCRIPTION
 Flux is a modern shell implementation written in Rust that combines the power of traditional Unix shells with modern features and customization options. It provides a rich set of features including:
@@ -133,3 +133,26 @@ Written by chocoOnEstrogen
 
 ## COPYRIGHT
 Copyright © 2025 chocoOnEstrogen. License MIT.
+
+## COMMANDS
+
+### Environment Management
+- `env` - Manage environment variables
+  - `env -s, --set KEY=VALUE [system|internal]` - Set environment variable
+  - `env -r, --remove KEY [system|internal]` - Remove environment variable
+  - `env -l, --list [system|internal]` - List environment variables
+
+### Plugin Management
+- `plugin` - Manage shell plugins
+  - `plugin install <git-url>` - Install a plugin from git
+  - `plugin init <name>` - Create a new plugin project
+  - `plugin list` - List installed plugins
+  - `plugin remove <name>` - Remove an installed plugin
+  - `plugin update <name>` - Update an installed plugin
+
+### Configuration
+- `config` - Reconfigure the shell (removes existing config and generates new)
+
+## OPTIONS
+- `-h, --help` - Display help message
+- `-v, --version` - Display version information

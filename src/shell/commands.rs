@@ -1,7 +1,6 @@
 use crate::config::FluxConfig;
 use crate::shell::Shell;
 use crate::utils::env::expand_env_vars;
-use crate::utils::env::{list_internal_envs, remove_internal_env, store_internal_env};
 use colored::*;
 use std::io::Write;
 use std::process::{Command, Stdio};
@@ -228,116 +227,6 @@ pub(crate) fn handle_builtin_command(args: &[&str], config: &FluxConfig) -> bool
             if args.len() == 1 {
                 for (alias, cmd) in &config.aliases {
                     println!("{} = '{}'", alias, cmd);
-                }
-            }
-            true
-        }
-        "env" => {
-            if args.len() == 1 {
-                for (key, value) in std::env::vars() {
-                    println!("{}={}", key, value);
-                }
-                return true;
-            }
-
-            match args[1] {
-                "-s" | "-S" | "--set" => {
-                    if args.len() < 3 {
-                        print_error("Usage: env -s KEY=VALUE [system|internal]", config);
-                        return true;
-                    }
-                    let kv_pair: &str = args[2];
-                    let storage: String = args
-                        .get(3)
-                        .map(|s| s.to_lowercase())
-                        .unwrap_or("system".to_string());
-
-                    if let Some((key, value)) = kv_pair.split_once('=') {
-                        match storage.as_str() {
-                            "system" => std::env::set_var(key, value),
-                            "internal" => {
-                                if let Err(e) = store_internal_env(key, value) {
-                                    print_error(
-                                        &format!("Failed to store internal env: {}", e),
-                                        config,
-                                    );
-                                    return true;
-                                }
-                            }
-                            _ => {
-                                print_error(
-                                    "Invalid storage type. Use 'system' or 'internal'",
-                                    config,
-                                );
-                                return true;
-                            }
-                        }
-                        print_success(&format!("Set {}={}", key, value), config);
-                    } else {
-                        print_error("Invalid format. Use KEY=VALUE", config);
-                    }
-                }
-                "-r" | "-R" | "--remove" => {
-                    if args.len() < 3 {
-                        print_error("Usage: env -r KEY [system|internal]", config);
-                        return true;
-                    }
-                    let key: &str = args[2];
-                    let storage: String = args
-                        .get(3)
-                        .map(|s| s.to_lowercase())
-                        .unwrap_or("system".to_string());
-
-                    match storage.as_str() {
-                        "system" => std::env::remove_var(key),
-                        "internal" => {
-                            if let Err(e) = remove_internal_env(key) {
-                                print_error(
-                                    &format!("Failed to remove internal env: {}", e),
-                                    config,
-                                );
-                                return true;
-                            }
-                        }
-                        _ => {
-                            print_error("Invalid storage type. Use 'system' or 'internal'", config);
-                            return true;
-                        }
-                    }
-                    print_success(&format!("Removed {}", key), config);
-                }
-                "-l" | "-L" | "--list" => {
-                    let storage: String = args
-                        .get(2)
-                        .map(|s| s.to_lowercase())
-                        .unwrap_or("system".to_string());
-
-                    match storage.as_str() {
-                        "system" => {
-                            for (key, value) in std::env::vars() {
-                                println!("{}={}", key, value);
-                            }
-                        }
-                        "internal" => match list_internal_envs() {
-                            Ok(vars) => {
-                                for (key, value) in vars {
-                                    println!("{}={}", key, value);
-                                }
-                            }
-                            Err(e) => {
-                                print_error(&format!("Failed to list internal envs: {}", e), config)
-                            }
-                        },
-                        _ => {
-                            print_error("Invalid storage type. Use 'system' or 'internal'", config);
-                        }
-                    }
-                }
-                _ => {
-                    print_error(
-                        "Invalid option. Use -s (set), -r (remove), or -l (list)",
-                        config,
-                    );
                 }
             }
             true
