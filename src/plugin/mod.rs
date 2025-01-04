@@ -187,15 +187,25 @@ impl PluginManager {
         let plugin_file = format!("{}.flp", uuid);
         let target_path = self.plugin_dir.join(&plugin_file);
         
-        let lib_path = if cfg!(windows) {
-            temp_path.join("target/release").join("*.dll")
+        let lib_name = temp_path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .ok_or_else(|| "Invalid temp directory name".to_string())?;
+
+        let lib_file = if cfg!(target_os = "windows") {
+            format!("lib{}.dll", lib_name)
         } else if cfg!(target_os = "macos") {
-            temp_path.join("target/release").join("*.dylib")
+            format!("lib{}.dylib", lib_name)
         } else {
-            temp_path.join("target/release").join("*.so")
+            format!("lib{}.so", lib_name)
         };
 
-        fs::copy(lib_path, &target_path)
+        let source_path = temp_path
+            .join("target")
+            .join("release")
+            .join(lib_file);
+
+        fs::copy(&source_path, &target_path)
             .map_err(|e| format!("Failed to install plugin: {}", e))?;
 
         fs::remove_dir_all(&temp_path).ok();
