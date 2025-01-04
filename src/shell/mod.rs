@@ -1,3 +1,4 @@
+/// Shell module containing core shell functionality and components
 mod commands;
 mod completion;
 mod prompt;

@@ -1,4 +1,4 @@
-/// Configuration types and functionality for the shell
+/// Configuration module containing theme and shell settings
 mod flux_config;
 mod theme;
 

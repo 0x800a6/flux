@@ -7,6 +7,10 @@ use std::path::PathBuf;
 const INTERNAL_ENV_FILE: &str = ".env";
 const ENCRYPTION_KEY: &[u8] = b"flux-shell-secret-key"; // You might want to generate this dynamically
 
+/// Gets the path to the internal environment variable storage file
+///
+/// # Returns
+/// * `PathBuf` - Path to the environment variable file
 fn get_internal_env_path() -> PathBuf {
     let mut path: PathBuf = dirs::config_dir()
         .unwrap_or_else(|| PathBuf::from("."))
@@ -15,6 +19,13 @@ fn get_internal_env_path() -> PathBuf {
     path
 }
 
+/// Encodes a value using XOR encryption and base64 encoding
+///
+/// # Arguments
+/// * `value` - String value to encode
+///
+/// # Returns
+/// * Encoded string value
 fn encode_value(value: &str) -> String {
     // Simple XOR encryption + base64 encoding
     let encrypted: Vec<u8> = value
@@ -25,6 +36,13 @@ fn encode_value(value: &str) -> String {
     general_purpose::STANDARD.encode(encrypted)
 }
 
+/// Decodes an encoded value using XOR decryption and base64 decoding
+///
+/// # Arguments
+/// * `encoded` - Encoded string to decode
+///
+/// # Returns
+/// * `io::Result<String>` - Decoded string or error
 fn decode_value(encoded: &str) -> io::Result<String> {
     let encrypted: Vec<u8> = general_purpose::STANDARD
         .decode(encoded)
@@ -83,6 +101,10 @@ pub fn list_internal_envs() -> io::Result<HashMap<String, String>> {
     Ok(decoded)
 }
 
+/// Loads internal environment variables from storage
+///
+/// # Returns
+/// * `io::Result<HashMap<String, String>>` - Map of variable names to encoded values
 fn load_internal_envs() -> io::Result<HashMap<String, String>> {
     let path: PathBuf = get_internal_env_path();
 
@@ -96,6 +118,13 @@ fn load_internal_envs() -> io::Result<HashMap<String, String>> {
     Ok(serde_json::from_str(&contents).unwrap_or_else(|_| HashMap::new()))
 }
 
+/// Saves internal environment variables to storage
+///
+/// # Arguments
+/// * `vars` - Map of variable names to encoded values
+///
+/// # Returns
+/// * `io::Result<()>` - Success or failure of the save operation
 fn save_internal_envs(vars: &HashMap<String, String>) -> io::Result<()> {
     let path: PathBuf = get_internal_env_path();
 
@@ -137,6 +166,10 @@ pub fn expand_env_vars(input: &str) -> String {
     result
 }
 
+/// Sets initial environment variables from configuration
+///
+/// # Arguments
+/// * `vars` - Map of environment variables to set
 pub fn set_initial_env_vars(vars: &HashMap<String, String>) {
     for (key, value) in vars {
         std::env::set_var(key, value);

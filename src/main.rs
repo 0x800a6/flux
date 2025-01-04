@@ -1,3 +1,4 @@
+/// Main module for the Flux shell application
 use std::path::PathBuf;
 mod config;
 mod plugin;
