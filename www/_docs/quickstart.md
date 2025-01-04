@@ -1,7 +1,7 @@
 ---
 layout: docs
-title: Getting Started
-description: Learn how to install and set up Flux Shell
+title: Quick Start
+description: Get started with Flux Shell
 order: 1
 show_edit_button: true
 ---
@@ -65,5 +65,4 @@ Here's a minimal configuration to get you started:
 ## Next Steps
 
 - Learn about [Configuration Options](/docs/configuration)
-- Explore available [Themes](/docs/themes)
-- Check out [Built-in Commands](/docs/commands) 
+- Learn about [Plugins](/docs/plugins)
