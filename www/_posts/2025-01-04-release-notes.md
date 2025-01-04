@@ -42,14 +42,14 @@ We're excited to announce the first stable release of Flux Shell! This release i
 
 ## Installation
 
-You can install Flux Shell using your package manager:
+
+Currently, Flux Shell is only available by building from source.
 
 ```bash
-# On Debian/Ubuntu
-sudo apt install flux-shell
-
-# On macOS
-brew install flux-shell
+git clone https://github.com/chocoOnEstrogen/flux.git
+cd flux
+make build
+sudo make install # If you are on a UNIX-like system
 ```
 
 ## Configuration
