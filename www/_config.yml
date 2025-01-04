@@ -9,20 +9,12 @@ highlighter: rouge
 
 # Collections
 collections:
-  docs:
-    output: true
-    permalink: /:collection/:path:output_ext
   posts:
     output: true
     permalink: /blog/:year/:month/:day/:title/
 
 # Defaults
 defaults:
-  - scope:
-      path: ""
-      type: "docs"
-    values:
-      layout: "docs"
   - scope:
       path: ""
       type: "posts"
@@ -35,8 +27,6 @@ defaults:
 
 # Navigation
 navigation:
-  - title: Docs
-    url: /docs/
   - title: Blog
     url: /blog/
   - title: Community
