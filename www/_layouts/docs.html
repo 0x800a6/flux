@@ -1,0 +1,69 @@
+---
+layout: default
+---
+<div class="docs-wrapper">
+    <aside class="docs-sidebar">
+        <div class="sidebar-header">
+            <h4>Documentation</h4>
+            <button class="btn-icon d-lg-none" id="sidebar-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="docs-nav">
+            <div class="nav-group">
+                <h6>Getting Started</h6>
+                <ul>
+                    <li><a href="/docs/quickstart">Quick Start</a></li>
+                    <li><a href="/docs/configuration">Configuration</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="docs-content">
+        <div class="content-header">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/docs">Docs</a></li>
+                    <li class="breadcrumb-item active">{{ page.title }}</li>
+                </ol>
+            </nav>
+            <div class="content-actions" style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 10px;">
+                <button class="btn btn-outline-primary btn-sm" id="onThisPage">
+                    On this page
+                </button>
+                <a href="{{ site.github.repository_url }}/edit/master/{{ page.path }}" 
+                   class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-pencil-alt"></i> Edit this page
+                </a>
+            </div>
+        </div>
+
+        <article class="docs-article">
+            {{ content }}
+        </article>
+
+        <div class="content-footer">
+            <div class="navigation-links">
+                {% if page.previous %}
+                <a href="{{ page.previous.url }}" class="prev-link">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ page.previous.title }}
+                </a>
+                {% endif %}
+                {% if page.next %}
+                <a href="{{ page.next.url }}" class="next-link">
+                    {{ page.next.title }}
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <nav class="table-of-contents d-none d-xl-block" id="tableOfContents">
+        <h6>On this page</h6>
+        <!-- Dynamically generated ToC -->
+    </nav>
+</div> 

@@ -1,0 +1,49 @@
+title: Flux Shell
+description: An advanced, customizable shell for modern systems
+baseurl: ""
+url: "https://flux.choco.rip"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /docs/:path/
+  posts:
+    output: true
+    permalink: /blog/:year/:month/:day/:title/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "docs"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+# Navigation
+navigation:
+  - title: Docs
+    url: /docs/
+  - title: Blog
+    url: /blog/
+  - title: Community
+    url: /community/
+
+# GitHub
+github:
+  repository_url: https://github.com/chocoOnEstrogen/flux
+  zip_url: https://github.com/chocoOnEstrogen/flux/archive/refs/heads/master.zip
+  tar_url: https://github.com/chocoOnEstrogen/flux/archive/refs/heads/master.tar.gz 

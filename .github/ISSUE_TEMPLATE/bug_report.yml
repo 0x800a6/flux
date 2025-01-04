@@ -1,0 +1,83 @@
+name: Bug report
+description: Create a report to help us improve
+title: "[BUG] "
+labels: 
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Describe the bug**
+        A clear and concise description of what the bug is.
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: "To Reproduce"
+      description: "Steps to reproduce the behavior"
+      placeholder: "1. Go to '...'\n2. Click on '....'\n3. Scroll down to '....'\n4. See error"
+
+  - type: input
+    id: expected
+    attributes:
+      label: "Expected behavior"
+      description: "A clear and concise description of what you expected to happen"
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Screenshots"
+      description: "If applicable, add screenshots to help explain your problem"
+
+  - type: dropdown
+    id: desktop-info
+    attributes:
+      label: "Desktop (please complete the following information)"
+      options:
+        - Windows
+        - macOS
+        - Linux
+
+  - type: input
+    id: browser
+    attributes:
+      label: "Browser"
+      description: "e.g. Chrome, Firefox, Safari"
+  
+  - type: input
+    id: version
+    attributes:
+      label: "Version"
+      description: "e.g. 22"
+
+  - type: input
+    id: smartphone
+    attributes:
+      label: "Smartphone (please complete the following information)"
+      description: "Device (e.g. iPhone6, Samsung Galaxy S10)"
+  
+  - type: dropdown
+    id: smartphone-os
+    attributes:
+      label: "OS"
+      options:
+        - iOS
+        - Android
+
+  - type: input
+    id: smartphone-browser
+    attributes:
+      label: "Browser"
+      description: "e.g. stock browser, Safari"
+
+  - type: input
+    id: smartphone-version
+    attributes:
+      label: "Version"
+      description: "e.g. 22"
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional context"
+      description: "Add any other context about the problem here"

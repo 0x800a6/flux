@@ -1,0 +1,39 @@
+---
+layout: default
+title: Blog
+permalink: /blog/
+---
+
+<div style="margin-top: 100px;"></div>
+
+<div class="container py-5">
+    <h1 class="mb-5">Latest Updates</h1>
+    
+    <div class="row g-4">
+        {% for post in site.posts %}
+        <div class="col-md-6 col-lg-4">
+            <article class="card h-100">
+                <div class="card-body">
+                    <div class="post-meta text-muted mb-2">
+                        <time>{{ post.date | date: "%B %d, %Y" }}</time>
+                        {% if post.author %}
+                        • {{ post.author }}
+                        {% endif %}
+                    </div>
+                    <h2 class="card-title h5">
+                        <a href="{{ post.url }}" class="text-decoration-none">
+                            {{ post.title }}
+                        </a>
+                    </h2>
+                    <p class="card-text">{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{{ post.url }}" class="btn btn-link p-0">
+                        Read more <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+</div> 

@@ -1,0 +1,17 @@
+name: General inquiry
+description: Ask a question or make a general comment
+title: "[INQUIRY] "
+labels: 
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Question or Comment**
+        A clear and concise description of your question or comment.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional context"
+      description: "Add any other context or screenshots related to your inquiry here"

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site.title }} - {{ page.title }}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Inter Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <!-- Highlight.js GitHub Theme (Dark) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{{ '/' }}">
+                <i class="fas fa-terminal me-2"></i>{{ site.title }}
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="/docs">Docs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="/blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="/pages/community">Community</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{{ site.github.repository_url }}" target="_blank">
+                            <i class="fab fa-github me-1"></i>GitHub
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary" href="{{ site.github.zip_url }}">
+                            <i class="fas fa-download me-1"></i>Download
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {{ content }}
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="text-gradient" style="color: #fff;">{{ site.title }}</h5>
+                    <p class="mb-0" style="color: #fff;">{{ site.description }}</p>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <a href="{{ site.github.repository_url }}" class="btn btn-outline-primary me-2">
+                        <i class="fab fa-github"></i> Source Code
+                    </a>
+                    <a href="{{ site.github.zip_url }}" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Add before closing body tag -->
+    <script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            document.getElementById('mainNav').classList.add('scrolled');
+        } else {
+            document.getElementById('mainNav').classList.remove('scrolled');
+        }
+    });
+
+    // Initialize clipboard.js for copy buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        const clipboard = new ClipboardJS('.copy-btn');
+        
+        clipboard.on('success', function(e) {
+            const button = e.trigger;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            
+            setTimeout(function() {
+                button.innerHTML = originalText;
+            }, 2000);
+        });
+    });
+    </script>
+
+    <!-- Clipboard.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+    <!-- Main.js -->
+    <script src="{{ site.baseurl }}/assets/js/main.js"></script>
+    <!-- Demo.js -->
+    <script src="{{ site.baseurl }}/assets/js/demo.js"></script>
+    <!-- Theme.js -->
+    <script src="{{ site.baseurl }}/assets/js/theme.js"></script>
+    <!-- Highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Highlight.js GitHub Theme
+            hljs.highlightAll();
+        });
+    </script>
+    <script src="{{ site.baseurl }}/assets/js/hero-background.js" type="module"></script>
+</body>
+</html> 

@@ -1,0 +1,14 @@
+<div class="contributors-grid">
+    {% for contributor in site.github.contributors %}
+    <div class="contributor-card">
+        <img src="{{ contributor.avatar_url }}" alt="{{ contributor.login }}" class="contributor-avatar">
+        <div class="contributor-info">
+            <h5>{{ contributor.login }}</h5>
+            <p>{{ contributor.contributions }} contributions</p>
+            <a href="{{ contributor.html_url }}" class="btn btn-sm btn-outline-primary">
+                View Profile
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div> 

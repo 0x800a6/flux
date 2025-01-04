@@ -1,0 +1,36 @@
+---
+layout: docs
+title: Documentation
+permalink: /docs/
+---
+
+<div class="docs-home">
+    <h1>Flux Shell Documentation</h1>
+    <p class="lead">Learn how to use and customize Flux Shell</p>
+
+    <div class="quick-start mt-5">
+        <h2>Quick Start</h2>
+        <div class="code-block">
+            <pre><code class="language-bash">git clone https://github.com/chocoOnEstrogen/flux.git
+cd flux
+make install</code></pre>
+        </div>
+    </div>
+
+    <div class="docs-sections mt-5">
+        <h2>Documentation Sections</h2>
+        <div class="row g-4">
+            {% assign sorted_docs = site.docs | sort: "order" %}
+            {% for doc in sorted_docs %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{{ doc.url }}" class="card h-100 text-decoration-none">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ doc.title }}</h5>
+                        <p class="card-text text-muted">{{ doc.description }}</p>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div> 

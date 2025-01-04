@@ -1,0 +1,53 @@
+---
+layout: default
+---
+    
+<!-- Push it down -->
+<div style="margin-top: 100px;"></div>
+
+<article class="post">
+    <div class="container py-5">
+        <header class="post-header mb-5">
+            <h1 class="display-4">{{ page.title }}</h1>
+            <div class="post-meta text-muted">
+                <time>{{ page.date | date: "%B %d, %Y" }}</time>
+                {% if page.author %}
+                • <span class="author">{{ page.author }}</span>
+                {% endif %}
+                {% if page.categories %}
+                • 
+                <span class="categories">
+                    {% for category in page.categories %}
+                    <a href="/categories/{{ category | slugify }}" class="badge bg-primary">{{ category }}</a>
+                    {% endfor %}
+                </span>
+                {% endif %}
+            </div>
+        </header>
+
+        <div class="post-content">
+            {{ content }}
+        </div>
+
+        <footer class="post-footer mt-5 pt-5 border-top">
+            <div class="row">
+                <div class="col-md-6">
+                    {% if page.previous %}
+                    <a href="{{ page.previous.url }}" class="d-block text-decoration-none mb-3">
+                        <small class="text-muted">Previous Post</small>
+                        <h5 class="mt-1">{{ page.previous.title }}</h5>
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 text-md-end">
+                    {% if page.next %}
+                    <a href="{{ page.next.url }}" class="d-block text-decoration-none mb-3">
+                        <small class="text-muted">Next Post</small>
+                        <h5 class="mt-1">{{ page.next.title }}</h5>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </footer>
+    </div>
+</article> 
