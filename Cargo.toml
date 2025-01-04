@@ -3,6 +3,14 @@ name = "flux"
 version = "0.1.2"
 edition = "2021"
 
+[lib]
+name = "flux"
+path = "src/lib.rs"
+
+[[bin]]
+name = "flux"
+path = "src/main.rs"
+
 [dependencies]
 rustyline = "12.0"     # For input handling and history
 dirs = "5.0"           # For cross-platform directory handling
