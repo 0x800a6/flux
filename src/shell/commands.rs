@@ -3,9 +3,19 @@ use crate::shell::Shell;
 use crate::utils::env::expand_env_vars;
 use crate::utils::env::{list_internal_envs, remove_internal_env, store_internal_env};
 use colored::*;
+use std::io::Write;
 use std::process::{Command, Stdio};
 use std::time::Instant;
 use which;
+
+/// Gets the system shell command and arguments
+fn get_system_shell() -> (&'static str, &'static str) {
+    if cfg!(windows) {
+        ("cmd.exe", "/C")
+    } else {
+        ("sh", "-c")
+    }
+}
 
 /// Executes a shell command with the given configuration
 ///
@@ -18,121 +28,166 @@ use which;
 pub(crate) fn execute_command(cmd: &str, shell: &Shell) -> bool {
     let start_time: Instant = Instant::now();
     let cmd: String = expand_env_vars(cmd);
-    let args: Vec<&str> = cmd.split_whitespace().collect();
 
-    if args.is_empty() {
-        return true;
-    }
+    let commands: Vec<CommandPart> = parse_command_chain(&cmd);
+    let mut last_success: bool = true;
+    let mut last_output: Option<std::process::Output> = None;
 
-    // First try built-in commands
-    if handle_builtin_command(&args, &shell.config) {
-        if shell.config.show_execution_time {
-            let duration: std::time::Duration = start_time.elapsed();
-            print_success(
-                &format!("Completed in {:.2}ms", duration.as_secs_f64() * 1000.0),
-                &shell.config,
-            );
+    for command in commands {
+        match command.operator {
+            Operator::And if !last_success => continue,
+            Operator::Or if last_success => continue,
+            _ => {}
         }
-        return true;
-    }
 
-    // Then try plugin commands
-    if let Some(plugin_name) = args.first() {
-        match shell.plugin_manager.execute_plugin(
-            plugin_name,
-            &args[1..].iter().map(|s| s.to_string()).collect::<Vec<_>>(),
-        ) {
-            Ok(_) => return true,
-            Err(e) if e.contains("not found") => {
-                // Continue to system commands if plugin not found
-            }
-            Err(e) => {
-                print_error(&format!("Plugin error: {}", e), &shell.config);
-                return true;
-            }
+        let args: Vec<&str> = command.command.split_whitespace().collect();
+        if args.is_empty() {
+            continue;
         }
-    }
 
-    // Finally, try system commands
-    if is_interactive_command(args[0]) {
-        let mut command: Command = Command::new(args[0]);
-        command.args(&args[1..]);
+        // Try built-in commands first
+        if handle_builtin_command(&args, &shell.config) {
+            last_success = true;
+            continue;
+        }
 
-        command
-            .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit());
-
-        match command.spawn() {
-            Ok(mut child) => {
-                let status: Result<std::process::ExitStatus, std::io::Error> = child.wait();
-                match status {
-                    Ok(exit_status) if !exit_status.success() => {
-                        print_error(
-                            &format!("Command exited with code: {}", exit_status),
-                            &shell.config,
-                        );
-                    }
-                    Err(e) => {
-                        print_error(&format!("Failed to run command: {}", e), &shell.config);
-                    }
-                    _ => {}
+        // Then try plugin commands
+        if let Some(plugin_name) = args.first() {
+            match shell.plugin_manager.execute_plugin(
+                plugin_name,
+                &args[1..].iter().map(|s| s.to_string()).collect::<Vec<_>>(),
+            ) {
+                Ok(_) => {
+                    last_success = true;
+                    continue;
+                }
+                Err(e) if e.contains("not found") => {}
+                Err(e) => {
+                    print_error(&format!("Plugin error: {}", e), &shell.config);
+                    last_success = false;
+                    continue;
                 }
             }
-            Err(e) => {
-                print_error(&format!("Failed to launch command: {}", e), &shell.config);
+        }
+
+        // Check if this is an interactive command
+        if let Some(cmd_name) = args.first() {
+            if is_interactive_command(cmd_name) {
+                let (shell_cmd, shell_arg) = get_system_shell();
+                let status: Result<std::process::ExitStatus, std::io::Error> =
+                    Command::new(shell_cmd)
+                        .arg(shell_arg)
+                        .arg(&command.command)
+                        .status();
+
+                match status {
+                    Ok(exit_status) => {
+                        last_success = exit_status.success();
+                    }
+                    Err(e) => {
+                        print_error(&format!("Failed to execute command: {}", e), &shell.config);
+                        last_success = false;
+                    }
+                }
+                continue;
             }
         }
-        return true;
+
+        // Handle non-interactive commands with pipes
+        let (shell_cmd, shell_arg) = get_system_shell();
+        let mut command_builder: Command = Command::new(shell_cmd);
+        command_builder.arg(shell_arg).arg(&command.command);
+
+        match command.operator {
+            Operator::Pipe => {
+                if let Some(previous_output) = last_output.clone() {
+                    command_builder.stdin(Stdio::piped());
+                    match command_builder
+                        .stdout(Stdio::piped())
+                        .stderr(Stdio::inherit())
+                        .spawn()
+                    {
+                        Ok(mut child) => {
+                            if let Some(mut stdin) = child.stdin.take() {
+                                if let Err(e) = stdin.write_all(&previous_output.stdout) {
+                                    print_error(
+                                        &format!("Failed to pipe data: {}", e),
+                                        &shell.config,
+                                    );
+                                    last_success = false;
+                                    continue;
+                                }
+                            }
+
+                            match child.wait_with_output() {
+                                Ok(output) => {
+                                    last_success = output.status.success();
+                                    if !matches!(command.operator, Operator::Pipe) {
+                                        if let Err(e) = std::io::stdout().write_all(&output.stdout)
+                                        {
+                                            print_error(
+                                                &format!("Failed to write output: {}", e),
+                                                &shell.config,
+                                            );
+                                            last_success = false;
+                                        }
+                                    }
+                                    last_output = Some(output);
+                                }
+                                Err(e) => {
+                                    print_error(
+                                        &format!("Failed to wait for command: {}", e),
+                                        &shell.config,
+                                    );
+                                    last_success = false;
+                                }
+                            }
+                        }
+                        Err(e) => {
+                            print_error(&format!("Failed to spawn command: {}", e), &shell.config);
+                            last_success = false;
+                        }
+                    }
+                }
+            }
+            _ => {
+                match command_builder
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::inherit())
+                    .output()
+                {
+                    Ok(output) => {
+                        last_success = output.status.success();
+
+                        if !command.operator.is_pipe() {
+                            if let Err(e) = std::io::stdout().write_all(&output.stdout) {
+                                print_error(
+                                    &format!("Failed to write output: {}", e),
+                                    &shell.config,
+                                );
+                                last_success = false;
+                            }
+                        }
+
+                        last_output = Some(output);
+                    }
+                    Err(e) => {
+                        print_error(&format!("Failed to execute command: {}", e), &shell.config);
+                        last_success = false;
+                    }
+                }
+            }
+        }
     }
 
-    if let Some(path) = shell.config.path_aliases.get(&cmd) {
-        if let Err(e) = std::env::set_current_dir(path) {
-            print_error(&format!("Failed to change directory: {}", e), &shell.config);
-        }
-        if shell.config.show_execution_time {
-            let duration: std::time::Duration = start_time.elapsed();
-            print_success(
-                &format!("Completed in {:.2}ms", duration.as_secs_f64() * 1000.0),
-                &shell.config,
-            );
-        }
-        return true;
+    if shell.config.show_execution_time {
+        let duration: std::time::Duration = start_time.elapsed();
+        print_success(
+            &format!("Completed in {:.2}ms", duration.as_secs_f64() * 1000.0),
+            &shell.config,
+        );
     }
 
-    if let Some(alias) = shell.config.aliases.get(&cmd) {
-        alias.clone()
-    } else {
-        cmd.clone()
-    };
-
-    let output: Result<std::process::Output, std::io::Error> = Command::new(args[0])
-        .args(&args[1..])
-        .stdout(Stdio::inherit())
-        .stderr(Stdio::inherit())
-        .output();
-
-    match output {
-        Ok(output) if !output.status.success() => {
-            print_error(
-                &format!("Command failed with code: {}", output.status),
-                &shell.config,
-            );
-        }
-        Err(e) => {
-            print_error(&format!("Failed to execute command: {}", e), &shell.config);
-        }
-        Ok(_) if shell.config.show_execution_time => {
-            let duration: std::time::Duration = start_time.elapsed();
-            print_success(
-                &format!("Completed in {:.2}ms", duration.as_secs_f64() * 1000.0),
-                &shell.config,
-            );
-        }
-        _ => {}
-    }
-
-    // Return true to keep the shell running
     true
 }
 
@@ -403,12 +458,13 @@ fn is_interactive_command(cmd: &str) -> bool {
         return true;
     }
 
+    // Check if the command has terminal-related libraries as dependencies
     if let Ok(output) = Command::new("ldd")
         .arg(which::which(cmd).unwrap_or_default())
         .output()
     {
         if let Ok(libs) = String::from_utf8(output.stdout) {
-            let interactive_libs = [
+            let interactive_libs: [&str; 6] = [
                 "libncurses",
                 "libtinfo",
                 "libreadline",
@@ -426,7 +482,7 @@ fn is_interactive_command(cmd: &str) -> bool {
     // Check if the command has a terminal as a dependency in its package metadata
     if let Ok(output) = Command::new("dpkg").args(["-s", cmd]).output() {
         if let Ok(info) = String::from_utf8(output.stdout) {
-            let terminal_deps = [
+            let terminal_deps: [&str; 7] = [
                 "ncurses", "readline", "terminal", "tty", "console", "screen", "vte",
             ];
 
@@ -437,4 +493,73 @@ fn is_interactive_command(cmd: &str) -> bool {
     }
 
     false
+}
+
+#[derive(Debug, PartialEq)]
+enum Operator {
+    None,
+    And,  // &&
+    Or,   // ||
+    Pipe, // |
+}
+
+impl Operator {
+    fn is_pipe(&self) -> bool {
+        matches!(self, Operator::Pipe)
+    }
+}
+
+struct CommandPart {
+    command: String,
+    operator: Operator,
+}
+
+fn parse_command_chain(input: &str) -> Vec<CommandPart> {
+    let mut commands: Vec<CommandPart> = Vec::new();
+    let mut current: String = String::new();
+    let mut chars: std::iter::Peekable<std::str::Chars<'_>> = input.chars().peekable();
+
+    while let Some(c) = chars.next() {
+        match c {
+            '&' if chars.peek() == Some(&'&') => {
+                chars.next(); // consume second &
+                if !current.trim().is_empty() {
+                    commands.push(CommandPart {
+                        command: current.trim().to_string(),
+                        operator: Operator::And,
+                    });
+                }
+                current.clear();
+            }
+            '|' if chars.peek() == Some(&'|') => {
+                chars.next(); // consume second |
+                if !current.trim().is_empty() {
+                    commands.push(CommandPart {
+                        command: current.trim().to_string(),
+                        operator: Operator::Or,
+                    });
+                }
+                current.clear();
+            }
+            '|' => {
+                if !current.trim().is_empty() {
+                    commands.push(CommandPart {
+                        command: current.trim().to_string(),
+                        operator: Operator::Pipe,
+                    });
+                }
+                current.clear();
+            }
+            _ => current.push(c),
+        }
+    }
+
+    if !current.trim().is_empty() {
+        commands.push(CommandPart {
+            command: current.trim().to_string(),
+            operator: Operator::None,
+        });
+    }
+
+    commands
 }
