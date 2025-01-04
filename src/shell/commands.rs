@@ -7,19 +7,6 @@ use std::time::Instant;
 pub(crate) fn execute_command(cmd: &str, config: &FluxConfig) -> bool {
     let start_time: Instant = Instant::now();
 
-    // Split command and colorize components
-    let parts: Vec<&str> = cmd.split_whitespace().collect();
-    if !parts.is_empty() {
-        let command: ColoredString = parts[0].color(config.theme.command_color.as_str());
-        let args: String = parts[1..]
-            .iter()
-            .map(|arg| arg.color(config.theme.args_color.as_str()).to_string())
-            .collect::<Vec<_>>()
-            .join(" ");
-
-        println!("{} {}", command, args);
-    }
-
     // First check if it's a path alias
     if let Some(path) = config.path_aliases.get(cmd) {
         if let Err(e) = std::env::set_current_dir(path) {
