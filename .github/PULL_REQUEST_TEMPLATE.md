@@ -1,19 +1,36 @@
 ## Description
-<!-- Provide a clear and comprehensive description of the changes, including references to related issues if applicable. -->
+<!-- Provide a clear and concise description of your changes -->
 
-## Acknowledgements
-- [ ] I have carefully reviewed the [Contributing Guidelines](./CONTRIBUTING.md).
-- [ ] I have carefully reviewed the [Code of Conduct](./CODE_OF_CONDUCT.md).
-<!-- Please select the most appropriate option. -->
-- [ ] I have added tests to cover my changes.
-- [ ] I have updated the documentation accordingly.
-- [ ] I have added a new feature or fixed a bug.
+## Type of Change
+<!-- Mark the appropriate option with an [x] -->
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
+- [ ] 📚 Documentation update
+- [ ] 🔧 Configuration change
+- [ ] ⚡️ Performance improvement
+- [ ] 🧪 Test update
+
+## Testing
+<!-- Describe how you tested your changes -->
+- [ ] I have added or updated tests
+- [ ] All existing tests pass
+
+## Documentation
+<!-- Mark if applicable -->
+- [ ] I have updated the documentation
+- [ ] This PR requires no documentation changes
 
 ## Screenshots
+<!-- If your changes include visual updates, add screenshots here -->
 <details>
-<summary> Proof of functionality: Screenshots and visual evidence </summary>
+<summary>Visual changes</summary>
 
-<!-- Include relevant screenshots to demonstrate that the changes are working as intended. -->
-<!-- ![screenshot](INSERT_LINK_HERE) -->
+<!-- Add your screenshots here -->
 
 </details>
+
+## Checklist
+- [ ] I have read the [Contributing Guidelines](./CONTRIBUTING.md)
+- [ ] My code follows the project's style guidelines
+- [ ] I have commented my code where necessary
+- [ ] My changes generate no new warnings

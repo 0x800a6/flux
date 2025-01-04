@@ -11,8 +11,8 @@ To get started, follow these steps:
 2. Clone your forked repository to your local machine
 
 ```bash
-  git clone https://github.com/your-username/repo-template.git
-  cd repo-template
+  git clone https://github.com/your-username/flux.git
+  cd flux
 ```
 
 3. Create a new branch for your contributions:
@@ -54,7 +54,7 @@ By contributing to this project, you agree that your contributions will be licen
 
 ## Contact
 
-If you have any questions or need assistance, feel free to reach out to us through the project's [issue tracker](https://github.com/chocoOnEstrogen/repo-template/issues).
+If you have any questions or need assistance, feel free to reach out to us through the project's [issue tracker](https://github.com/chocoOnEstrogen/flux/issues).
 
 
 <p align="center"> Thank you for contributing to the Repository! 🎉 </p>

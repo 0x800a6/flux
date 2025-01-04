@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Support
-    url: https://example.com/support
-    about: If you have a question, please check our support page.
+  - name: Community Discussion
+    url: https://flux.choco.rip/pages/community
+    about: For general questions and discussions
+  - name: Documentation
+    url: https://flux.choco.rip
+    about: Make sure to check our documentation first
