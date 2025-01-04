@@ -60,9 +60,9 @@ pub(crate) fn format_prompt(config: &FluxConfig) -> String {
             let formatted_branch = git_branch
                 .color(config.theme.git_branch_color.as_str())
                 .to_string();
-            prompt = prompt.replace("{git}", &formatted_branch);
+            prompt = prompt.replace(" on {git}", &format!(" on {}", formatted_branch));
         } else {
-            prompt = prompt.replace("{git}", "");
+            prompt = prompt.replace(" on {git}", "");
         }
     }
 
