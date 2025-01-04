@@ -9,6 +9,7 @@ use rustyline::config::Configurer;
 use rustyline::history::FileHistory;
 use rustyline::{error::ReadlineError, Editor};
 use std::path::PathBuf;
+use crate::plugin::PluginManager;
 
 /// Main shell implementation
 pub struct Shell {
@@ -16,6 +17,7 @@ pub struct Shell {
     config: FluxConfig,
     /// Line editor with history and completion
     editor: Editor<FluxCompleter, FileHistory>,
+    plugin_manager: PluginManager,
 }
 
 impl Shell {
@@ -55,7 +57,16 @@ impl Shell {
         // Set environment variables from config
         set_initial_env_vars(&config.environment_variables);
 
-        Shell { config, editor }
+        let mut plugin_manager = PluginManager::new();
+        if let Err(e) = plugin_manager.load_plugins() {
+            eprintln!("Failed to load plugins: {}", e);
+        }
+
+        Shell { 
+            config, 
+            editor,
+            plugin_manager,
+        }
     }
 
     /// Gets the path to the shell configuration file
@@ -97,7 +108,7 @@ impl Shell {
                         if let Err(e) = self.editor.save_history(&history_path) {
                             eprintln!("Failed to save history: {}", e);
                         }
-                        commands::execute_command(trimmed, &self.config);
+                        commands::execute_command(trimmed, &self);
                     }
                 }
                 Err(ReadlineError::Interrupted) => {
@@ -114,5 +125,11 @@ impl Shell {
                 }
             }
         }
+    }
+}
+
+impl Drop for Shell {
+    fn drop(&mut self) {
+        self.plugin_manager.cleanup();
     }
 }

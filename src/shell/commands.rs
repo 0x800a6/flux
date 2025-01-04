@@ -1,3 +1,4 @@
+use crate::shell::Shell;
 use crate::config::FluxConfig;
 use crate::utils::env::expand_env_vars;
 use colored::*;
@@ -14,16 +15,39 @@ use which;
 /// 
 /// # Returns
 /// * `bool` - Whether the shell should continue running
-pub(crate) fn execute_command(cmd: &str, config: &FluxConfig) -> bool {
-    let start_time: Instant = Instant::now();
-
-    let cmd: String = expand_env_vars(cmd);
-
+pub(crate) fn execute_command(cmd: &str, shell: &Shell) -> bool {
+    let start_time = Instant::now();
+    let cmd = expand_env_vars(cmd);
     let args: Vec<&str> = cmd.split_whitespace().collect();
+    
     if args.is_empty() {
         return true;
     }
 
+    // First try built-in commands
+    if handle_builtin_command(&args, &shell.config) {
+        if shell.config.show_execution_time {
+            let duration = start_time.elapsed();
+            print_success(
+                &format!("Completed in {:.2}ms", duration.as_secs_f64() * 1000.0),
+                &shell.config,
+            );
+        }
+        return true;
+    }
+
+    // Then try plugins (only if command contains a space - indicating arguments)
+    if cmd.contains(' ') {
+        let parts: Vec<&str> = cmd.splitn(2, ' ').collect();
+        if let Some((plugin_name, args)) = parts.split_first() {
+            if let Err(e) = shell.plugin_manager.execute_plugin(plugin_name, &args[0].split_whitespace().map(String::from).collect::<Vec<_>>()) {
+                print_error(&format!("Plugin error: {}", e), &shell.config);
+            }
+            return true;
+        }
+    }
+
+    // Finally, try system commands
     if is_interactive_command(args[0]) {
         let mut command: Command = Command::new(args[0]);
         command.args(&args[1..]);
@@ -38,51 +62,40 @@ pub(crate) fn execute_command(cmd: &str, config: &FluxConfig) -> bool {
                 let status: Result<std::process::ExitStatus, std::io::Error> = child.wait();
                 match status {
                     Ok(exit_status) if !exit_status.success() => {
-                        print_error(&format!("Command exited with code: {}", exit_status), config);
+                        print_error(&format!("Command exited with code: {}", exit_status), &shell.config);
                     }
                     Err(e) => {
-                        print_error(&format!("Failed to run command: {}", e), config);
+                        print_error(&format!("Failed to run command: {}", e), &shell.config);
                     }
                     _ => {}
                 }
             }
             Err(e) => {
-                print_error(&format!("Failed to launch command: {}", e), config);
+                print_error(&format!("Failed to launch command: {}", e), &shell.config);
             }
         }
         return true;
     }
 
-    if let Some(path) = config.path_aliases.get(&cmd) {
+    if let Some(path) = shell.config.path_aliases.get(&cmd) {
         if let Err(e) = std::env::set_current_dir(path) {
-            print_error(&format!("Failed to change directory: {}", e), config);
+            print_error(&format!("Failed to change directory: {}", e), &shell.config);
         }
-        if config.show_execution_time {
+        if shell.config.show_execution_time {
             let duration: std::time::Duration = start_time.elapsed();
             print_success(
                 &format!("Completed in {:.2}ms", duration.as_secs_f64() * 1000.0),
-                config,
+                &shell.config,
             );
         }
         return true;
     }
 
-    if let Some(alias) = config.aliases.get(&cmd) {
+    if let Some(alias) = shell.config.aliases.get(&cmd) {
         alias.clone()
     } else {
         cmd.clone()
     };
-
-    if handle_builtin_command(&args, config) {
-        if config.show_execution_time {
-            let duration: std::time::Duration = start_time.elapsed();
-            print_success(
-                &format!("Completed in {:.2}ms", duration.as_secs_f64() * 1000.0),
-                config,
-            );
-        }
-        return true;
-    }
 
     let output: Result<std::process::Output, std::io::Error> = Command::new(args[0])
         .args(&args[1..])
@@ -94,17 +107,17 @@ pub(crate) fn execute_command(cmd: &str, config: &FluxConfig) -> bool {
         Ok(output) if !output.status.success() => {
             print_error(
                 &format!("Command failed with code: {}", output.status),
-                config,
+                &shell.config,
             );
         }
         Err(e) => {
-            print_error(&format!("Failed to execute command: {}", e), config);
+            print_error(&format!("Failed to execute command: {}", e), &shell.config);
         }
-        Ok(_) if config.show_execution_time => {
+        Ok(_) if shell.config.show_execution_time => {
             let duration: std::time::Duration = start_time.elapsed();
             print_success(
                 &format!("Completed in {:.2}ms", duration.as_secs_f64() * 1000.0),
-                config,
+                &shell.config,
             );
         }
         _ => {}
