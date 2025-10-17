@@ -14,7 +14,7 @@ const ENCRYPTION_KEY: &[u8] = b"flux-shell-secret-key"; // You might want to gen
 fn get_internal_env_path() -> PathBuf {
     let mut path: PathBuf = dirs::config_dir()
         .unwrap_or_else(|| PathBuf::from("."))
-        .join("rip.choco.flux");
+        .join("sh.lrr.flux");
     path.push(INTERNAL_ENV_FILE);
     path
 }

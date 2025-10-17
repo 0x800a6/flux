@@ -83,7 +83,7 @@ impl Shell {
         } else {
             PathBuf::from(".")
         };
-        path.push("rip.choco.flux");
+        path.push("sh.lrr.flux");
         std::fs::create_dir_all(&path).expect("Failed to create config directory");
         path.push("config.fl");
         path

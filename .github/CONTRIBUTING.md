@@ -43,7 +43,6 @@ To get started, follow these steps:
 
 If you encounter any issues or bugs in the project, please create an issue on the repository. Provide as much detail as possible, including the steps to reproduce the issue.
 
-
 ## Code of Conduct
 
 We adhere to the [Code of Conduct](./CODE_OF_CONDUCT.md) for maintaining a respectful and welcoming environment for all contributors.
@@ -54,7 +53,6 @@ By contributing to this project, you agree that your contributions will be licen
 
 ## Contact
 
-If you have any questions or need assistance, feel free to reach out to us through the project's [issue tracker](https://github.com/chocoOnEstrogen/flux/issues).
-
+If you have any questions or need assistance, feel free to reach out to us through the project's [issue tracker](https://github.com/0x800a6/flux/issues).
 
 <p align="center"> Thank you for contributing to the Repository! 🎉 </p>

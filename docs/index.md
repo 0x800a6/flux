@@ -1,12 +1,15 @@
 # FLUX(1) Shell Manual
 
 ## NAME
+
 flux - An advanced, customizable shell for modern systems
 
 ## SYNOPSIS
+
 `flux [OPTIONS] [COMMAND]`
 
 ## DESCRIPTION
+
 Flux is a modern shell implementation written in Rust that combines the power of traditional Unix shells with modern features and customization options. It provides a rich set of features including:
 
 - Customizable prompts with git integration
@@ -17,20 +20,26 @@ Flux is a modern shell implementation written in Rust that combines the power of
 - Execution time tracking
 
 ## CONFIGURATION
+
 Flux uses a configuration file located at:
-- Unix: `$XDG_CONFIG_HOME/rip.choco.flux/config.fl`
-- Windows: `%APPDATA%\rip.choco.flux\config.fl`
+
+- Unix: `$XDG_CONFIG_HOME/sh.lrr.flux/config.fl`
+- Windows: `%APPDATA%\sh.lrr.flux\config.fl`
 
 ### Configuration Modes
+
 Flux supports three configuration modes:
 
 1. **Minimal**
+
    ```
    #minimal
    ```
+
    Basic prompt with essential features.
 
 2. **Full** (Default)
+
    ```json
    {
      "prompt_template": "[{time}] {user}@{host} {dir} {git}\nλ ",
@@ -39,6 +48,7 @@ Flux supports three configuration modes:
      // ... other options
    }
    ```
+
    Complete feature set with git integration.
 
 3. **Powerline**
@@ -48,7 +58,9 @@ Flux supports three configuration modes:
    Enhanced visual style with Unicode characters.
 
 ## PROMPT CUSTOMIZATION
+
 The prompt can be customized using the following placeholders:
+
 - `{user}` - Current username
 - `{host}` - Hostname
 - `{dir}` - Current directory
@@ -58,27 +70,34 @@ The prompt can be customized using the following placeholders:
 ## BUILT-IN COMMANDS
 
 ### Navigation
+
 - `cd [DIR]` - Change directory
 - `pwd` - Print working directory
 
 ### Environment
+
 - `env` - List environment variables
 - `env set KEY VALUE` - Set environment variable
 - `env unset KEY` - Unset environment variable
 
 ### Shell Control
+
 - `exit` - Exit the shell
 - `clear` - Clear the screen
 - `alias` - List defined aliases
 
 ## PATH ALIASES
+
 Default path aliases:
+
 - `~` - Home directory
 - `@docs` - Documents directory
 - `@dl` - Downloads directory
 
 ## THEME
+
 Colors can be customized for various elements:
+
 - `prompt_color`
 - `error_color`
 - `success_color`
@@ -93,6 +112,7 @@ Available colors include: `black`, `red`, `green`, `yellow`, `blue`, `magenta`, 
 ## EXAMPLES
 
 ### Basic Usage
+
 ```bash
 # Start the shell
 $ flux
@@ -109,6 +129,7 @@ flux λ git checkout -b feature
 ```
 
 ### Custom Configuration
+
 ```json
 {
   "prompt_template": "[ {time} ] {dir} {git} → ",
@@ -121,28 +142,34 @@ flux λ git checkout -b feature
 ```
 
 ## SEE ALSO
+
 - bash(1)
 - zsh(1)
 - fish(1)
 
 ## BUGS
-Report bugs at: https://github.com/chocoOnEstrogen/flux/issues
+
+Report bugs at: https://github.com/0x800a6/flux/issues
 
 ## AUTHOR
-Written by chocoOnEstrogen
+
+Written by 0x800a6
 
 ## COPYRIGHT
-Copyright © 2025 chocoOnEstrogen. License MIT.
+
+Copyright © 2025 0x800a6. License MIT.
 
 ## COMMANDS
 
 ### Environment Management
+
 - `env` - Manage environment variables
   - `env -s, --set KEY=VALUE [system|internal]` - Set environment variable
   - `env -r, --remove KEY [system|internal]` - Remove environment variable
   - `env -l, --list [system|internal]` - List environment variables
 
 ### Plugin Management
+
 - `plugin` - Manage shell plugins
   - `plugin install <git-url>` - Install a plugin from git
   - `plugin init <name>` - Create a new plugin project
@@ -151,8 +178,10 @@ Copyright © 2025 chocoOnEstrogen. License MIT.
   - `plugin update <name>` - Update an installed plugin
 
 ### Configuration
+
 - `config` - Reconfigure the shell (removes existing config and generates new)
 
 ## OPTIONS
+
 - `-h, --help` - Display help message
 - `-v, --version` - Display version information

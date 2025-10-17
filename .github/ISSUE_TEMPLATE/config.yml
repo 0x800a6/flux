@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Community Discussion
-    url: https://flux.choco.rip/pages/community
+    url: https://flux.lrr.sh/pages/community
     about: For general questions and discussions
   - name: Documentation
-    url: https://flux.choco.rip
+    url: https://flux.lrr.sh
     about: Make sure to check our documentation first

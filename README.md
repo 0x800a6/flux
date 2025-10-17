@@ -2,8 +2,9 @@
   <h1>Flux Shell</h1>
   <p>A modern, blazingly fast shell written in Rust</p>
 
-  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-  [![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org)
+
 </div>
 
 ## Features
@@ -31,7 +32,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/chocoOnEstrogen/flux.git
+git clone https://github.com/0x800a6/flux.git
 cd flux
 
 # Build and install
@@ -52,23 +53,26 @@ flux λ @dl       # Jump to Downloads
 # Git integration
 flux λ cd ~/projects
 flux λ git checkout -b feature
-(feature) flux λ 
+(feature) flux λ
 ```
 
 ## Configuration
 
 Flux uses a JSON configuration file located at:
-- 🐧 Unix: `$XDG_CONFIG_HOME/rip.choco.flux/config.fl`
-- 🪟 Windows: `%APPDATA%\rip.choco.flux\config.fl`
+
+- 🐧 Unix: `$XDG_CONFIG_HOME/sh.lrr.flux/config.fl`
+- 🪟 Windows: `%APPDATA%\sh.lrr.flux\config.fl`
 
 ### Theme Presets
 
 1. **Minimal** - Clean and simple
+
 ```
 #minimal
 ```
 
 2. **Full** (Default) - Rich features
+
 ```json
 {
   "prompt_template": "[{time}] {user}@{host} {dir} {git}\nλ ",
@@ -78,26 +82,27 @@ Flux uses a JSON configuration file located at:
 ```
 
 3. **Powerline** - Enhanced visuals
+
 ```
 #powerline
 ```
 
 ## Documentation
 
-- [Online Documentation](https://flux.choco.rip)
+- [Online Documentation](https://flux.lrr.sh)
 - Manual: `man flux`
 - Configuration Guide: `flux --help`
 
 ## Built-in Commands
 
-| Command | Description |
-|---------|-------------|
-| `cd [DIR]` | Change directory |
-| `pwd` | Print working directory |
-| `env` | Manage environment variables |
-| `clear` | Clear screen |
-| `exit` | Exit shell |
-| `alias` | List aliases |
+| Command    | Description                  |
+| ---------- | ---------------------------- |
+| `cd [DIR]` | Change directory             |
+| `pwd`      | Print working directory      |
+| `env`      | Manage environment variables |
+| `clear`    | Clear screen                 |
+| `exit`     | Exit shell                   |
+| `alias`    | List aliases                 |
 
 ## Contributing
 
@@ -122,9 +127,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Author
 
-**chocoOnEstrogen**
-- GitHub: [@chocoOnEstrogen](https://github.com/chocoOnEstrogen)
+**0x800a6**
 
-
-
-
+- GitHub: [@0x800a6](https://github.com/0x800a6)

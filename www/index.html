@@ -5,135 +5,162 @@ title: Home
 
 <!-- Hero Section -->
 <section class="hero-section text-light position-relative overflow-hidden">
-    <!-- Add canvas element for Three.js -->
-    <canvas id="hero-background" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 0;"></canvas>
-    
-    <div class="container position-relative z-index-1">
-        <div class="row align-items-center min-vh-100">
-            <div class="col-lg-6">
-                <span class="badge bg-primary-subtle text-primary mb-3">Modern Shell</span>
-                <h1 class="display-3 fw-bold mb-4">Flux Shell</h1>
-                <p class="lead mb-4" style="color: #fff;">A blazing-fast, customizable shell written in Rust, designed for modern developers.</p>
-                <div class="hero-buttons">
-                    <a href="#quick-start" class="btn btn-gradient btn-lg me-3">
-                        <i class="fas fa-rocket me-2"></i>Get Started
-                    </a>
-                    <a href="{{ site.github.repository_url }}" class="btn btn-outline-light btn-lg">
-                        <i class="fab fa-github me-2"></i>View on GitHub
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-6 mt-5 mt-lg-0">
-                <div class="terminal-wrapper">
-                    <div class="terminal-header">
-                        <div class="terminal-title">Interactive Demo</div>
-                    </div>
-                    <div class="terminal-body" id="demo-terminal">
-                        <!-- Terminal content will be populated by JS -->
-                    </div>
-                </div>
-            </div>
+  <!-- Add canvas element for Three.js -->
+  <canvas
+    id="hero-background"
+    class="position-absolute top-0 start-0 w-100 h-100"
+    style="z-index: 0"
+  ></canvas>
+
+  <div class="container position-relative z-index-1">
+    <div class="row align-items-center min-vh-100">
+      <div class="col-lg-6">
+        <span class="badge bg-primary-subtle text-primary mb-3"
+          >Modern Shell</span
+        >
+        <h1 class="display-3 fw-bold mb-4">Flux Shell</h1>
+        <p class="lead mb-4" style="color: #fff">
+          A blazing-fast, customizable shell written in Rust, designed for
+          modern developers.
+        </p>
+        <div class="hero-buttons">
+          <a href="#quick-start" class="btn btn-gradient btn-lg me-3">
+            <i class="fas fa-rocket me-2"></i>Get Started
+          </a>
+          <a
+            href="{{ site.github.repository_url }}"
+            class="btn btn-outline-light btn-lg"
+          >
+            <i class="fab fa-github me-2"></i>View on GitHub
+          </a>
         </div>
+      </div>
+      <div class="col-lg-6 mt-5 mt-lg-0">
+        <div class="terminal-wrapper">
+          <div class="terminal-header">
+            <div class="terminal-title">Interactive Demo</div>
+          </div>
+          <div class="terminal-body" id="demo-terminal">
+            <!-- Terminal content will be populated by JS -->
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="hero-shapes">
-        <div class="shape-1"></div>
-        <div class="shape-2"></div>
-    </div>
+  </div>
+  <div class="hero-shapes">
+    <div class="shape-1"></div>
+    <div class="shape-2"></div>
+  </div>
 </section>
 
 <!-- Features Section -->
 <section id="features" class="py-6">
-    <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-            <div class="col-lg-6">
-                <span class="badge bg-primary-subtle text-primary mb-3">Features</span>
-                <h2 class="display-5 fw-bold mb-4">Everything You Need</h2>
-                <p class="text-muted">Discover the powerful features that make Flux Shell the perfect choice for modern developers.</p>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="icon-wrapper bg-primary-subtle mb-4">
-                        <i class="fas fa-bolt text-primary"></i>
-                    </div>
-                    <h5 class="fw-bold">Lightning Fast</h5>
-                    <p class="text-muted">Built with Rust for unprecedented speed and reliability.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="icon-wrapper bg-success-subtle mb-4">
-                        <i class="fas fa-puzzle-piece text-success"></i>
-                    </div>
-                    <h5 class="fw-bold">Customizable</h5>
-                    <p class="text-muted">Tailor every aspect of your shell experience.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="icon-wrapper bg-info-subtle mb-4">
-                        <i class="fas fa-shield-alt text-info"></i>
-                    </div>
-                    <h5 class="fw-bold">Secure</h5>
-                    <p class="text-muted">Advanced security features to protect your system.</p>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="row justify-content-center text-center mb-5">
+      <div class="col-lg-6">
+        <span class="badge bg-primary-subtle text-primary mb-3">Features</span>
+        <h2 class="display-5 fw-bold mb-4">Everything You Need</h2>
+        <p class="text-muted">
+          Discover the powerful features that make Flux Shell the perfect choice
+          for modern developers.
+        </p>
+      </div>
     </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="feature-card">
+          <div class="icon-wrapper bg-primary-subtle mb-4">
+            <i class="fas fa-bolt text-primary"></i>
+          </div>
+          <h5 class="fw-bold">Lightning Fast</h5>
+          <p class="text-muted">
+            Built with Rust for unprecedented speed and reliability.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <div class="icon-wrapper bg-success-subtle mb-4">
+            <i class="fas fa-puzzle-piece text-success"></i>
+          </div>
+          <h5 class="fw-bold">Customizable</h5>
+          <p class="text-muted">
+            Tailor every aspect of your shell experience.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <div class="icon-wrapper bg-info-subtle mb-4">
+            <i class="fas fa-shield-alt text-info"></i>
+          </div>
+          <h5 class="fw-bold">Secure</h5>
+          <p class="text-muted">
+            Advanced security features to protect your system.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Documentation Section -->
 <section id="documentation" class="py-6 bg-light">
-    <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-            <div class="col-lg-6">
-                <span class="badge bg-primary-subtle text-primary mb-3">Documentation</span>
-                <h2 class="display-5 fw-bold mb-4">Get Started</h2>
-                <p class="text-muted">Quick setup guide to get you up and running with Flux Shell.</p>
+  <div class="container">
+    <div class="row justify-content-center text-center mb-5">
+      <div class="col-lg-6">
+        <span class="badge bg-primary-subtle text-primary mb-3"
+          >Documentation</span
+        >
+        <h2 class="display-5 fw-bold mb-4">Get Started</h2>
+        <p class="text-muted">
+          Quick setup guide to get you up and running with Flux Shell.
+        </p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="doc-card">
+          <h4 class="fw-bold mb-3">
+            <i class="fas fa-rocket me-2 text-primary"></i>Quick Start
+          </h4>
+          <div class="code-block">
+            <div class="code-header">
+              <span>Installation</span>
+              <button class="copy-btn" data-clipboard-target="#install-code">
+                <i class="far fa-copy"></i>
+              </button>
             </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="doc-card">
-                    <h4 class="fw-bold mb-3">
-                        <i class="fas fa-rocket me-2 text-primary"></i>Quick Start
-                    </h4>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>Installation</span>
-                            <button class="copy-btn" data-clipboard-target="#install-code">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <pre class="mb-0"><code id="install-code">git clone {{ site.github.repository_url }}
+            <pre
+              class="mb-0"
+            ><code id="install-code">git clone {{ site.github.repository_url }}
 cd flux
 make install</code></pre>
-                    </div>
-                </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="doc-card">
+          <h4 class="fw-bold mb-3">
+            <i class="fas fa-cog me-2 text-primary"></i>Configuration
+          </h4>
+          <div class="code-block">
+            <div class="code-header">
+              <span>~/.config/sh.lrr.flux/config.fl</span>
+              <button class="copy-btn" data-clipboard-target="#config-code">
+                <i class="far fa-copy"></i>
+              </button>
             </div>
-            <div class="col-md-6">
-                <div class="doc-card">
-                    <h4 class="fw-bold mb-3">
-                        <i class="fas fa-cog me-2 text-primary"></i>Configuration
-                    </h4>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>~/.config/rip.choco.flux/config.fl</span>
-                            <button class="copy-btn" data-clipboard-target="#config-code">
-                                <i class="far fa-copy"></i>
-                            </button>
-                        </div>
-                        <pre class="mb-0"><code id="config-code">
+            <pre class="mb-0"><code id="config-code">
 {
     "prompt": "flux λ ",
     "prompt_template": "{dir} λ ",
     // More configuration options... in /docs/configuration
 }
                         </code></pre>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
-</section> 
+  </div>
+</section>

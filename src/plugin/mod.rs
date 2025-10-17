@@ -69,7 +69,7 @@ impl PluginManager {
     pub fn new() -> Self {
         let plugin_dir: PathBuf = dirs::config_dir()
             .unwrap_or_else(|| PathBuf::from("."))
-            .join("rip.choco.flux")
+            .join("sh.lrr.flux")
             .join("plugins");
 
         let temp_dir: PathBuf = plugin_dir.join("temp");
@@ -255,7 +255,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-flux = {{ git = "https://github.com/chocoOnEstrogen/flux" }}
+flux = {{ git = "https://github.com/0x800a6/flux" }}
 "#,
             name
         );
@@ -383,7 +383,7 @@ flux = {{ git = "https://github.com/chocoOnEstrogen/flux" }}
     pub fn new_without_loading() -> Self {
         let plugin_dir: PathBuf = dirs::config_dir()
             .unwrap_or_else(|| PathBuf::from("."))
-            .join("rip.choco.flux")
+            .join("sh.lrr.flux")
             .join("plugins");
 
         let temp_dir: PathBuf = plugin_dir.join("temp");
